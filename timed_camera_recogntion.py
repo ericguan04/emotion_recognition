@@ -21,8 +21,8 @@ def timedCameraRecognition(duration, showRectangle=False):
 
     # Run the while loop for a finite amount of time
     # Current time - start time = time elapsed
-    start_time = time.time()
-    while time.time() - start_time < duration:
+    startTime = time.time()
+    while time.time() - startTime < duration:
         # Capture a frame from webcam
         ret, frame = cap.read()
 
