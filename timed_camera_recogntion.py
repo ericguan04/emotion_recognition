@@ -8,12 +8,13 @@ from deepface import DeepFace
 import time
 from collections import Counter
 
-def timedCameraRecognition():
+def timedCameraRecognition(duration, showRectangle=False):
     # Array that saves all the emotion data
     emotionList = []
     
-    # Load pre-trained models for face detection
-    # faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    if showRectangle:
+        # Load pre-trained models for face detection
+        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     # Open webcam
     cap = cv2.VideoCapture(0)
@@ -21,7 +22,7 @@ def timedCameraRecognition():
     # Run the while loop for a finite amount of time
     # Current time - start time = time elapsed
     start_time = time.time()
-    while time.time() - start_time < 15: #15 second interval
+    while time.time() - start_time < duration:
         # Capture a frame from webcam
         ret, frame = cap.read()
 
@@ -35,20 +36,20 @@ def timedCameraRecognition():
         except:
             pass #skip if face not detected
 
-        '''
-        # Draw rectangle around the face
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        faces = faceCascade.detectMultiScale(gray, 1.1, 4)
-        for (x,y,w,h) in faces:
-            cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0), 2)
-        
-        # Add text to webcam video
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        try:
-            cv2.putText(frame, dominantEmotion, (50,50), font, 3, (0,0,255), 2, cv2.LINE_4)
-        except:
-            pass #skip if face not detected
-        '''
+        if showRectangle:
+            # Draw rectangle around the face
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = faceCascade.detectMultiScale(gray, 1.1, 4)
+            for (x,y,w,h) in faces:
+                cv2.rectangle(frame, (x,y), (x+w, y+h), (0,255,0), 2)
+            
+            # Add text to webcam video
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            try:
+                cv2.putText(frame, dominantEmotion, (50,50), font, 3, (0,0,255), 2, cv2.LINE_4)
+            except:
+                pass #skip if face not detected
+            
 
         # Display the resulting frame
         cv2.imshow('Emotion Detection', frame)
@@ -64,11 +65,12 @@ def timedCameraRecognition():
     # Save the most frequent emotion from the list to finalEmotion -> Represents the emotion used for robot movement
     finalEmotion = Counter(emotionList).most_common(1)[0][0]
     print(emotionList)
-    print(finalEmotion)
+    print("Most Frequent Emotion: " + finalEmotion)
 
 
 def main():
-    timedCameraRecognition()
+    # 15 seconds, show rectangle
+    timedCameraRecognition(15, True)
 
 if __name__ == "__main__":
     main()
