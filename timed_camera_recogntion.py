@@ -6,11 +6,11 @@ Records facial data for a finite amount of time and return the most frequent fac
 import cv2
 from deepface import DeepFace
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 
 def timedCameraRecognition(duration, showRectangle=False):
-    # Array that saves all the emotion data
-    emotionList = []
+    # Dictionary that saves all the emotion data
+    emotionMap = defaultdict(int)
     
     if showRectangle:
         # Load pre-trained models for face detection
@@ -32,7 +32,7 @@ def timedCameraRecognition(duration, showRectangle=False):
         try:
             emotion = DeepFace.analyze(frame, actions='emotion')
             dominantEmotion = emotion[0]['dominant_emotion']
-            emotionList.append(dominantEmotion)
+            emotionMap[dominantEmotion] += 1
         except:
             pass #skip if face not detected
 
@@ -62,9 +62,10 @@ def timedCameraRecognition(duration, showRectangle=False):
     cap.release()
     cv2.destroyAllWindows()
 
-    # Save the most frequent emotion from the list to finalEmotion -> Represents the emotion used for robot movement
-    finalEmotion = Counter(emotionList).most_common(1)[0][0]
-    print(emotionList)
+    # Save the most frequent emotion from the dictionary to finalEmotion -> Represents the emotion used for robot movement
+    sortedEmotionMap = sorted(emotionMap.items(), reverse=True, key=lambda x:x[1])
+    finalEmotion = sortedEmotionMap[0][0]
+    print(emotionMap)
     print("Most Frequent Emotion: " + finalEmotion)
 
 
@@ -74,5 +75,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
