@@ -8,6 +8,23 @@ from deepface import DeepFace
 import time
 from collections import Counter, defaultdict
 
+'''
+def preprocessImage(img):
+    # Convert image to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Resize the image to a fixed size
+    resized_img = cv2.resize(gray, (48, 48))
+
+    # Apply histogram equalization
+    equalized_img = cv2.equalizeHist(resized_img)
+
+    # Apply normalization
+    normalized_img = equalized_img / 255.0
+
+    return normalized_img
+'''
+
 def timedCameraRecognition(duration, showRectangle=False):
     # Dictionary that saves all the emotion data
     emotionMap = defaultdict(int)
@@ -27,7 +44,8 @@ def timedCameraRecognition(duration, showRectangle=False):
         ret, frame = cap.read()
 
         # Run some preprocessing on the frame image
-        
+        # frame = preprocessImage(frame)
+
         # Run DeepFace emotion analysis on frame
         try:
             emotion = DeepFace.analyze(frame, actions='emotion')
