@@ -6,7 +6,7 @@ Records facial data for a finite amount of time and return the most frequent fac
 import cv2
 from deepface import DeepFace
 import time
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 '''
 def preprocessImage(img):
